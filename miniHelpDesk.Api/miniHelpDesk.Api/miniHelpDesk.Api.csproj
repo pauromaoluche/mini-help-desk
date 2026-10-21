@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\miniHelpDesk.Application\miniHelpDesk.Application.csproj" />
+    <ProjectReference Include="..\miniHelpDesk.Infrastructure\miniHelpDesk.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
