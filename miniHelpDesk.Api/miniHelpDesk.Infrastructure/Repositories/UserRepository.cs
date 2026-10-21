@@ -12,9 +12,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserDbContext _userDbContext;
+        private readonly AppDbContext _userDbContext;
 
-        public UserRepository(UserDbContext userDbContext)
+        public UserRepository(AppDbContext userDbContext)
         {
             _userDbContext = userDbContext;
         }
