@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="miniHelpDesk.Api/miniHelpDesk.Api.csproj" />
+  <Project Path="miniHelpDesk.Application/miniHelpDesk.Application.csproj" />
+  <Project Path="miniHelpDesk.Core/miniHelpDesk.Core.csproj" />
+  <Project Path="miniHelpDesk.Infrastructure/miniHelpDesk.Infrastructure.csproj" />
+</Solution>

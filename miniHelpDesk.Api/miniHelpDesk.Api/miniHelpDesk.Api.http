@@ -1,0 +1,6 @@
+@miniHelpDesk.Api_HostAddress = http://localhost:5211
+
+GET {{miniHelpDesk.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
