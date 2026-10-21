@@ -5,13 +5,13 @@ using System.Text;
 
 namespace miniHelpDesk.Core.Interface
 {
-    public interface IUserRpository
+    public interface IUserRepository
     {
         Task<User?> GetByIdAsync(int id);
 
         Task<User?> GetByEmailAsync(string email);
 
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<List<User>> GetAllAsync();
 
         Task<User> CreateAsync(User user);
 
