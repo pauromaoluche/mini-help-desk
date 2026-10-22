@@ -19,11 +19,8 @@ namespace miniHelpDesk.Api.Controllers
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest data)
         {
             var response = await _userService.CreateAsync(data);
-            if (response != null)
-            {
-                return Ok(response);
-            }
-            return BadRequest(response);
+            
+            return Ok(response);
         }
     }
 }

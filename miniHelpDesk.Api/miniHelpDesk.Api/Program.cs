@@ -1,5 +1,4 @@
-
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using miniHelpDesk.Application.Interfaces;
@@ -25,6 +24,25 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(_ => { }, typeof(UserMappingProfile).Assembly);
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(entry => entry.Value?.Errors.Count > 0)
+            .SelectMany(entry => entry.Value!.Errors.Select(error => new
+            {
+                Field = entry.Key,
+                Message = error.ErrorMessage
+            }));
+
+        return new BadRequestObjectResult(new
+        {
+            Message = "Validation failed.",
+            Errors = errors
+        });
+    };
+});
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
