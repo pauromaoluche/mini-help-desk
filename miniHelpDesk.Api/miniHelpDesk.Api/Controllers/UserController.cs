@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using miniHelpDesk.Application.DTOs.Requests;
 using miniHelpDesk.Application.Interfaces;
-using miniHelpDesk.Core.Entities;
 
 namespace miniHelpDesk.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -17,14 +16,14 @@ namespace miniHelpDesk.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest data)
         {
-            var result = await _userService.CreateAsync(user);
-            if (result != null)
+            var response = await _userService.CreateAsync(data);
+            if (response != null)
             {
-                return Ok(result);
+                return Ok(response);
             }
-            return BadRequest(result);
+            return BadRequest(response);
         }
     }
 }

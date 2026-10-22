@@ -1,7 +1,6 @@
-﻿using miniHelpDesk.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using miniHelpDesk.Application.DTOs.Requests;
+using miniHelpDesk.Application.DTOs.Response;
+using miniHelpDesk.Core.Entities;
 
 namespace miniHelpDesk.Application.Interfaces
 {
@@ -13,7 +12,7 @@ namespace miniHelpDesk.Application.Interfaces
 
         Task<List<User>> GetAllAsync();
 
-        Task<User> CreateAsync(User user);
+        Task<UserSummaryResponse> CreateAsync(CreateUserRequest data);
 
         Task<User> UpdateAsync(int id, User user);
 

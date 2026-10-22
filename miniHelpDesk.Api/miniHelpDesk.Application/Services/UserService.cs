@@ -1,25 +1,34 @@
-﻿using miniHelpDesk.Application.Interfaces;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using miniHelpDesk.Application.DTOs.Requests;
+using miniHelpDesk.Application.DTOs.Response;
+using miniHelpDesk.Application.Interfaces;
 using miniHelpDesk.Core.Entities;
 using miniHelpDesk.Core.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace miniHelpDesk.Application.Services
 {
     public class UserService : IUserService
     {
-
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<User> passwordHasher)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<UserSummaryResponse> CreateAsync(CreateUserRequest data)
         {
-            return await _userRepository.CreateAsync(user);
+            var user = _mapper.Map<User>(data);
+            user.Password = _passwordHasher.HashPassword(user, data.Password);
+
+            await _userRepository.CreateAsync(user);
+
+            return _mapper.Map<UserSummaryResponse>(user);
         }
 
         public Task<bool> DeleteAsync(int id)
