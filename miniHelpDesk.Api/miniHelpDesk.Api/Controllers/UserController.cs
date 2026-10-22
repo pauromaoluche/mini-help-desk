@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using miniHelpDesk.Application.DTOs.Requests;
 using miniHelpDesk.Application.Interfaces;
+using miniHelpDesk.Core.Entities;
 
 namespace miniHelpDesk.Api.Controllers
 {
@@ -13,6 +14,17 @@ namespace miniHelpDesk.Api.Controllers
         public UserController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
+        {
+            var response = await _userService.GetByIdAsync(id);
+
+            if (response == null)
+                return NotFound();
+
+            return Ok(response);
         }
 
         [HttpPost]

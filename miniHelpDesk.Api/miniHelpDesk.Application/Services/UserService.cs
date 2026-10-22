@@ -21,6 +21,13 @@ namespace miniHelpDesk.Application.Services
             _passwordHasher = passwordHasher;
         }
 
+        public async Task<UserSummaryResponse?> GetByIdAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            return _mapper.Map<UserSummaryResponse?>(user);
+        }
+
         public async Task<UserSummaryResponse> CreateAsync(CreateUserRequest data)
         {
             var user = _mapper.Map<User>(data);
@@ -47,11 +54,6 @@ namespace miniHelpDesk.Application.Services
         }
 
         public Task<User?> GetByEmailAsync(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
