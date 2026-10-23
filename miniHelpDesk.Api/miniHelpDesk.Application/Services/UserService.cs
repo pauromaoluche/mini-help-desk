@@ -43,9 +43,9 @@ namespace miniHelpDesk.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> ExistsByEmailAsync(string email)
+        public async Task<bool> ExistsByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _userRepository.ExistsByEmailAsync(email);
         }
 
         public Task<List<User>> GetAllAsync()
@@ -53,14 +53,14 @@ namespace miniHelpDesk.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetByEmailAsync(email);
         }
 
-        public Task SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            await _userRepository.SaveChangesAsync();
         }
 
         public Task<User> UpdateAsync(int id, User user)

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using miniHelpDesk.Application.DTOs.Requests;
 using miniHelpDesk.Application.Interfaces;
-using miniHelpDesk.Core.Entities;
 
 namespace miniHelpDesk.Api.Controllers
 {
+    [Authorize]
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase

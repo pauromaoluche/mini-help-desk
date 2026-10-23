@@ -2,11 +2,6 @@
 using miniHelpDesk.Core.Entities;
 using miniHelpDesk.Core.Interface;
 using miniHelpDesk.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace miniHelpDesk.Infrastructure.Repositories
 {
@@ -39,9 +34,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
             return true;
         }
 
-        public Task<bool> ExistsByEmailAsync(string email)
+        public async Task<bool> ExistsByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _userDbContext.Users.AnyAsync(u => u.Email == email);
         }
 
         public async Task<List<User>> GetAllAsync()
@@ -49,9 +44,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
            return await _userDbContext.Users.ToListAsync();
         }
 
-        public Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User?> GetByIdAsync(int id)
@@ -59,9 +54,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
             return await _userDbContext.Users.FindAsync(id);
         }
 
-        public Task SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            await _userDbContext.SaveChangesAsync();
         }
 
         public async Task<User> UpdateAsync(int id, User user)
