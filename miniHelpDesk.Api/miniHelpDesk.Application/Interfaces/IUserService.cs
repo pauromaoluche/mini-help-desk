@@ -14,7 +14,7 @@ namespace miniHelpDesk.Application.Interfaces
 
         Task<UserSummaryResponse> CreateAsync(CreateUserRequest data);
 
-        Task<User> UpdateAsync(int id, User user);
+        Task<UserSummaryResponse> UpdateAsync(int id, UpdateUserRequest user);
 
         Task<bool> DeleteAsync(int id);
 

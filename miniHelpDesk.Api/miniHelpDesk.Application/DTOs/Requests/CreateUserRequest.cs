@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using miniHelpDesk.Core.Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace miniHelpDesk.Application.DTOs.Requests
 {
@@ -17,6 +18,6 @@ namespace miniHelpDesk.Application.DTOs.Requests
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = string.Empty;
+        public UserRoleEnum Role { get; set; } = UserRoleEnum.User;
     }
 }

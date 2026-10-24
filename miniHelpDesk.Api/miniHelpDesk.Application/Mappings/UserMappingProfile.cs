@@ -11,6 +11,11 @@ namespace miniHelpDesk.Application.Mappings
         {
             CreateMap<CreateUserRequest, User>();
             CreateMap<User, UserSummaryResponse>();
-        }
+
+            CreateMap<UpdateUserRequest, User>()
+                .ForMember(dest => dest.Password, opt => opt.Ignore())
+                .ForAllMembers(opt =>
+                    opt.Condition((src, dest, srcMember) => srcMember != null));
+                    }
     }
 }

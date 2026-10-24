@@ -38,11 +38,6 @@ namespace miniHelpDesk.Application.Services
             return _mapper.Map<UserSummaryResponse>(user);
         }
 
-        public Task<bool> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> ExistsByEmailAsync(string email)
         {
             return await _userRepository.ExistsByEmailAsync(email);
@@ -64,9 +59,40 @@ namespace miniHelpDesk.Application.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public Task<User> UpdateAsync(int id, User user)
+        public async Task<UserSummaryResponse> UpdateAsync(int id, UpdateUserRequest data)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            _mapper.Map(data, user);
+
+            if (!string.IsNullOrWhiteSpace(data.Password))
+            {
+                user.Password = _passwordHasher.HashPassword(user, data.Password);
+            }
+
+            await _userRepository.SaveChangesAsync();
+
+            return _mapper.Map<UserSummaryResponse>(user);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            await _userRepository.DeleteAsync(id);
+            await _userRepository.SaveChangesAsync();
+
+            return true;
         }
     }
 }
