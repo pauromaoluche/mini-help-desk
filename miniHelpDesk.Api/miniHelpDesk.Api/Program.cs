@@ -130,6 +130,13 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+    UserSeeder.SeedAdminUserAsync(dbContext, passwordHasher).GetAwaiter().GetResult();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

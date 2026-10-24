@@ -1,7 +1,4 @@
 ﻿using miniHelpDesk.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace miniHelpDesk.Core.Interface
 {

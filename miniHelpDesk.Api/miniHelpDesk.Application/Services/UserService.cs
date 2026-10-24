@@ -48,9 +48,10 @@ namespace miniHelpDesk.Application.Services
             return await _userRepository.ExistsByEmailAsync(email);
         }
 
-        public Task<List<User>> GetAllAsync()
+        public async Task<List<UserSummaryResponse>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<List<UserSummaryResponse>>(users);
         }
 
         public async Task<User?> GetByEmailAsync(string email)

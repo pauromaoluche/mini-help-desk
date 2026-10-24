@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using miniHelpDesk.Application.DTOs.Requests;
+using miniHelpDesk.Application.DTOs.Response;
 using miniHelpDesk.Application.Interfaces;
 
 namespace miniHelpDesk.Api.Controllers
@@ -33,6 +34,13 @@ namespace miniHelpDesk.Api.Controllers
         {
             var response = await _userService.CreateAsync(data);
             
+            return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserSummaryResponse>>> GetAllUsers()
+        {
+            var response = await _userService.GetAllAsync();
             return Ok(response);
         }
     }
