@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using miniHelpDesk.Application.DTOs.Requests;
 using miniHelpDesk.Application.DTOs.Response;
@@ -14,11 +15,14 @@ namespace miniHelpDesk.Application.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<User> passwordHasher)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<User> passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<UserSummaryResponse?> GetByIdAsync(int id)
@@ -26,6 +30,37 @@ namespace miniHelpDesk.Application.Services
             var user = await _userRepository.GetByIdAsync(id);
 
             return _mapper.Map<UserSummaryResponse?>(user);
+        }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _userRepository.GetByEmailAsync(email);
+        }
+
+        public async Task<UserSummaryResponse?> GetMeAsync()
+        {
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+
+            var idClaim = userRequest?.FindFirst("id")?.Value;
+
+            if (string.IsNullOrEmpty(idClaim))
+                return null;
+
+            if (!int.TryParse(idClaim, out var userId))
+                return null;
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user is null)
+                return null;
+
+            return _mapper.Map<UserSummaryResponse>(user);
+        }
+
+        public async Task<List<UserSummaryResponse>> GetAllAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<List<UserSummaryResponse>>(users);
         }
 
         public async Task<UserSummaryResponse> CreateAsync(CreateUserRequest data)
@@ -36,27 +71,6 @@ namespace miniHelpDesk.Application.Services
             await _userRepository.CreateAsync(user);
 
             return _mapper.Map<UserSummaryResponse>(user);
-        }
-
-        public async Task<bool> ExistsByEmailAsync(string email)
-        {
-            return await _userRepository.ExistsByEmailAsync(email);
-        }
-
-        public async Task<List<UserSummaryResponse>> GetAllAsync()
-        {
-            var users = await _userRepository.GetAllAsync();
-            return _mapper.Map<List<UserSummaryResponse>>(users);
-        }
-
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _userRepository.GetByEmailAsync(email);
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _userRepository.SaveChangesAsync();
         }
 
         public async Task<UserSummaryResponse> UpdateAsync(int id, UpdateUserRequest data)
@@ -93,6 +107,11 @@ namespace miniHelpDesk.Application.Services
             await _userRepository.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _userRepository.SaveChangesAsync();
         }
     }
 }

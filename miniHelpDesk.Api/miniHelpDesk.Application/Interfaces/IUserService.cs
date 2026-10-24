@@ -10,6 +10,8 @@ namespace miniHelpDesk.Application.Interfaces
 
         Task<User?> GetByEmailAsync(string email);
 
+        Task<UserSummaryResponse?> GetMeAsync();
+
         Task<List<UserSummaryResponse>> GetAllAsync();
 
         Task<UserSummaryResponse> CreateAsync(CreateUserRequest data);
@@ -17,8 +19,6 @@ namespace miniHelpDesk.Application.Interfaces
         Task<UserSummaryResponse> UpdateAsync(int id, UpdateUserRequest user);
 
         Task<bool> DeleteAsync(int id);
-
-        Task<bool> ExistsByEmailAsync(string email);
 
         Task SaveChangesAsync();
     }

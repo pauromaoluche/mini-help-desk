@@ -28,7 +28,6 @@ namespace miniHelpDesk.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] AuthRequest request)
         {
-
             var token = await _authService.Auth(request);
 
             return token is null ? Unauthorized() : Ok(token);

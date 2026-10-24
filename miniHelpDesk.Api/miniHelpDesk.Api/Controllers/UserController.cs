@@ -18,6 +18,7 @@ namespace miniHelpDesk.Api.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest data)
         {
@@ -33,6 +34,14 @@ namespace miniHelpDesk.Api.Controllers
 
             if (response == null)
                 return NotFound();
+
+            return Ok(response);
+        }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            var response = await _userService.GetMeAsync();
 
             return Ok(response);
         }
