@@ -94,6 +94,17 @@ namespace miniHelpDesk.Application.Services
             return _mapper.Map<UserSummaryResponse>(user);
         }
 
+        public async Task<UserSummaryResponse> UpdateMeAsync(UpdateUserRequest data)
+        {
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+
+            var idClaim = userRequest?.FindFirst("id")?.Value;
+
+            int.TryParse(idClaim, out var userId);
+
+            return await UpdateAsync(userId, data);
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);

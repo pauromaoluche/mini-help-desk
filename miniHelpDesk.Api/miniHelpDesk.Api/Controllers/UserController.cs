@@ -7,7 +7,7 @@ using miniHelpDesk.Application.Interfaces;
 namespace miniHelpDesk.Api.Controllers
 {
     [Authorize]
-    [Route("api/user")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -53,10 +53,18 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequest data)
         {
             var response = await _userService.UpdateAsync(id, data);
+            return Ok(response);
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserRequest data)
+        {
+            var response = await _userService.UpdateMeAsync(data);
             return Ok(response);
         }
 
