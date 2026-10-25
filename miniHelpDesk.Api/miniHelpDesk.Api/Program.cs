@@ -29,6 +29,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddAutoMapper(_ => { }, typeof(UserMappingProfile).Assembly);
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
