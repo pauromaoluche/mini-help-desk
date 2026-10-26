@@ -11,6 +11,7 @@ namespace miniHelpDesk.Application.Mappings
         {
             CreateMap<CreateTicketRequest, Ticket>();
             CreateMap<Ticket, TicketSummaryResponse>();
+            CreateMap<Ticket, TicketDetailResponse>();
         }
     }
 }

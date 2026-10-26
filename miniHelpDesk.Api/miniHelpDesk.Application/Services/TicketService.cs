@@ -43,6 +43,18 @@ namespace miniHelpDesk.Application.Services
             return _mapper.Map<TicketSummaryResponse>(ticket);
         }
 
+        public async Task<List<TicketSummaryResponse>> GetAllAsync()
+        {
+            var tickets = await _ticketRepository.GetAllAsync();
+            return _mapper.Map<List<TicketSummaryResponse>>(tickets);
+        }
+
+        public async Task<TicketDetailResponse> GetByIdAsync(int id)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+            return _mapper.Map<TicketDetailResponse>(ticket);
+        }
+
         public Task SaveChangesAsync()
         {
             throw new NotImplementedException();
