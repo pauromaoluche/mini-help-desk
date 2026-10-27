@@ -21,6 +21,34 @@ namespace miniHelpDesk.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<TicketSummaryResponse> AssignAsync(int id)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+
+            if(ticket == null)
+            {
+                throw new Exception("Ticket not found");
+            }
+            if(ticket.AssignedToId != null)
+            {
+                throw new Exception("Ticket already assigned");
+            }
+
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+
+            var idClaim = userRequest?.FindFirst("id")?.Value;
+
+            int.TryParse(idClaim, out var userId);
+
+            var assigned = ticket.AssignTo(userId);
+
+            if (!assigned)
+            {
+                throw new Exception("Ticket already assigned to this user");
+            }
+
+            return _mapper.Map<TicketSummaryResponse>(ticket);
+        }
 
         public async Task<TicketSummaryResponse> CreateAsync(CreateTicketRequest data)
         {

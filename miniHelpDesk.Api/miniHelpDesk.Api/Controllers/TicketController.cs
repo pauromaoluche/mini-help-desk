@@ -42,5 +42,12 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPatch("{id}/assign")]
+        public async Task<IActionResult> Assign([FromRoute] int id)
+        {
+            var response = await _ticketService.AssignAsync(id);
+            return Ok(response);
+        }
+
     }
 }

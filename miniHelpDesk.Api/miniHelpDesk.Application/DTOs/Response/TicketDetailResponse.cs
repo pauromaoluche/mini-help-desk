@@ -11,7 +11,6 @@ namespace miniHelpDesk.Application.DTOs.Response
         public TicketPriorityEnum Priority { get; set; }
         public TicketStatusEnum Status { get; set; }
         public int CreatedById { get; set; }
-        public string CreatedByName { get; set; } = string.Empty;
         public int? AssignedToId { get; set; }
         public string? AssignedToName { get; set; }
         public DateTime CreatedAt { get; set; }
