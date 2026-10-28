@@ -57,5 +57,11 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPatch("{id}/transfer")]
+        public async Task<IActionResult> TransferTicket([FromRoute] int id, [FromBody] TransferTicketRequest data)
+        {
+            var response = await _ticketService.TransferTicketAsync(id, data);
+            return Ok(response);
+        }
     }
 }

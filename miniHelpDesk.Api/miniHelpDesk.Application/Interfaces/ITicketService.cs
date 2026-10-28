@@ -9,6 +9,8 @@ namespace miniHelpDesk.Application.Interfaces
 
         Task<TicketDetailResponse> GetByIdAsync(int id);
 
+        Task<TicketSummaryResponse> TransferTicketAsync(int id, TransferTicketRequest data);
+
         Task<List<TicketSummaryResponse>> GetAllAsync();
 
         Task<TicketSummaryResponse> AssignAsync(int id);

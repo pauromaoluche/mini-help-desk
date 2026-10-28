@@ -12,14 +12,16 @@ namespace miniHelpDesk.Application.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
-        public TicketService(ITicketRepository ticketRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public TicketService(ITicketRepository ticketRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper, IUserRepository userRepository)
         {
             _ticketRepository = ticketRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public async Task<TicketSummaryResponse> AssignAsync(int id)
@@ -137,6 +139,46 @@ namespace miniHelpDesk.Application.Services
             await _ticketRepository.SaveChangesAsync();
 
             return _mapper.Map<TicketDetailResponse>(ticket);
+        }
+
+        public async Task<TicketSummaryResponse> TransferTicketAsync(int id, TransferTicketRequest data)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+
+            if (ticket == null)
+            {
+                throw new Exception("Ticket not found");
+            }
+
+            var oldAssignedToId = ticket.AssignedToId;
+
+            var oldStatus = ticket.Status;
+
+            var newAssigned = await _userRepository.GetByIdAsync(data.NewAssignedToId);
+
+            if(newAssigned == null)
+            {
+                throw new Exception("New assigned user not found");
+            }
+
+            if(ticket.AssignedToId == data.NewAssignedToId)
+            {
+                throw new Exception("Ticket is already assigned to this user");
+            }
+
+            var updated = ticket.UpdateProgress(TicketStatusEnum.Backlog, newAssigned.Id);
+
+            if (!updated)
+            {
+                throw new Exception("No changes were made to the ticket");
+            }
+
+            await CreateHistory(ticket, oldAssignedToId, oldStatus, data.Comment);
+
+            await _ticketRepository.SaveChangesAsync();
+
+            return _mapper.Map<TicketSummaryResponse>(ticket);
+
         }
     }
 }
