@@ -78,6 +78,60 @@ namespace miniHelpDesk.Infrastructure.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("miniHelpDesk.Core.Entities.TicketHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChangedById")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnOrder(2);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(8);
+
+                    b.Property<int?>("NewAssignedToId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("NewStatus")
+                        .HasColumnType("int")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("OldAssignedToId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(5);
+
+                    b.Property<int?>("OldStatus")
+                        .HasColumnType("int")
+                        .HasColumnOrder(6);
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(7);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(9);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketHistories");
+                });
+
             modelBuilder.Entity("miniHelpDesk.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -134,6 +188,25 @@ namespace miniHelpDesk.Infrastructure.Migrations
                     b.Navigation("AssignedTo");
 
                     b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("miniHelpDesk.Core.Entities.TicketHistory", b =>
+                {
+                    b.HasOne("miniHelpDesk.Core.Entities.User", "ChangedBy")
+                        .WithMany()
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("miniHelpDesk.Core.Entities.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618
         }

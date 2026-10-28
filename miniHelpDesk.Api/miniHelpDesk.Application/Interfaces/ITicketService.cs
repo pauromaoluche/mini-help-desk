@@ -13,6 +13,8 @@ namespace miniHelpDesk.Application.Interfaces
 
         Task<TicketSummaryResponse> AssignAsync(int id);
 
+        Task<TicketDetailResponse> UpdateTicketProgressAsync(int id, UpdateTicketProgressRequest data);
+
         Task SaveChangesAsync();
     }
 }

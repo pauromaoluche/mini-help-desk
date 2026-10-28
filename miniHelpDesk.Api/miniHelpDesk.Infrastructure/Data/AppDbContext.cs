@@ -11,6 +11,7 @@ namespace miniHelpDesk.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<TicketHistory> TicketHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +44,18 @@ namespace miniHelpDesk.Infrastructure.Data
                 entity.Property(nameof(EntityBase.UpdatedAt))
                     .HasColumnOrder(properties.Count + 2);
             }
+
+            modelBuilder.Entity<TicketHistory>()
+                .HasOne(h => h.ChangedBy)
+                .WithMany()
+                .HasForeignKey(h => h.ChangedById)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TicketHistory>()
+                .HasOne(h => h.Ticket)
+                .WithMany(t => t.History)
+                .HasForeignKey(h => h.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -21,6 +21,11 @@ namespace miniHelpDesk.Infrastructure.Repositories
             return ticket;
         }
 
+        public async Task AddHistoryAsync(TicketHistory ticketHistory)
+        {
+            await _ticketDbContext.TicketHistories.AddAsync(ticketHistory);
+        }
+
         public async Task<List<Ticket>> GetAllAsync()
         {
             return await _ticketDbContext.Tickets.ToListAsync();
@@ -28,7 +33,11 @@ namespace miniHelpDesk.Infrastructure.Repositories
 
         public async Task<Ticket?> GetByIdAsync(int id)
         {
-            return await _ticketDbContext.Tickets.FindAsync(id);
+            return await _ticketDbContext.Tickets
+                .Include(t => t.AssignedTo)
+                .Include(t => t.History)
+                    .ThenInclude(h => h.ChangedBy)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task SaveChangesAsync()

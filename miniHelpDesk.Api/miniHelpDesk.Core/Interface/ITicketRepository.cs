@@ -6,6 +6,8 @@ namespace miniHelpDesk.Core.Interface
     {
         Task<Ticket> CreateAsync(Ticket ticket);
 
+        Task AddHistoryAsync(TicketHistory ticketHistory);
+
         Task<List<Ticket>> GetAllAsync();
 
         Task<Ticket?> GetByIdAsync(int id);

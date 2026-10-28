@@ -11,7 +11,11 @@ namespace miniHelpDesk.Application.Mappings
         {
             CreateMap<CreateTicketRequest, Ticket>();
             CreateMap<Ticket, TicketSummaryResponse>();
-            CreateMap<Ticket, TicketDetailResponse>();
+            CreateMap<Ticket, TicketDetailResponse>()
+                .ForMember(dest => dest.AssignedToName, opt => opt.MapFrom(src => src.AssignedTo != null ? src.AssignedTo.Name : null));
+
+            CreateMap<TicketHistory, TicketHistoryResponse>()
+                .ForMember(dest => dest.ChangedByName, opt => opt.MapFrom(src => src.ChangedBy.Name));
         }
     }
 }

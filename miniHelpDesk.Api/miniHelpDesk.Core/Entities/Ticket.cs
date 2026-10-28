@@ -13,6 +13,7 @@ namespace miniHelpDesk.Core.Entities
         public User CreatedBy { get; private set; } = null!;
         public int? AssignedToId { get; private set; }
         public User? AssignedTo { get; private set; }
+        public List<TicketHistory> History { get; private set; } = [];
 
         private Ticket() { }
 
@@ -43,6 +44,14 @@ namespace miniHelpDesk.Core.Entities
             return true;
         }
 
+        public bool UpdateCategory(TicketCategoryEnum category)
+        {
+            if (Category == category)
+                return false;
+            Category = category;
+            return true;
+        }
+
         public bool AssignTo(int? assignedToId)
         {
             if (AssignedToId == assignedToId)
@@ -50,6 +59,13 @@ namespace miniHelpDesk.Core.Entities
 
             AssignedToId = assignedToId;
             return true;
+        }
+
+        public bool UpdateProgress(TicketStatusEnum status, int? assignedToId = null)
+        {
+            var statusUpdated = UpdateStatus(status);
+            var assignedToUpdated = AssignTo(assignedToId);
+            return statusUpdated || assignedToUpdated;
         }
     }
 }

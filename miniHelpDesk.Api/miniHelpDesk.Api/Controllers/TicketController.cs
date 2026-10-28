@@ -49,5 +49,13 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPatch("{id}/progress")]
+        public async Task<IActionResult> UpdateTicketProgress([FromRoute] int id, [FromBody] UpdateTicketProgressRequest data) 
+        {
+            var response = await _ticketService.UpdateTicketProgressAsync(id, data);
+
+            return Ok(response);
+        }
+
     }
 }
