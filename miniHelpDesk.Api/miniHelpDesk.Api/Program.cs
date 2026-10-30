@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using miniHelpDesk.Api.Middlewares;
 using miniHelpDesk.Application.Interfaces;
 using miniHelpDesk.Application.Mappings;
 using miniHelpDesk.Application.Services;
@@ -148,7 +149,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
