@@ -25,18 +25,6 @@ namespace miniHelpDesk.Application.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<UserSummaryResponse?> GetByIdAsync(int id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-
-            return _mapper.Map<UserSummaryResponse?>(user);
-        }
-
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _userRepository.GetByEmailAsync(email);
-        }
-
         public async Task<UserSummaryResponse?> GetMeAsync()
         {
             var userRequest = _httpContextAccessor.HttpContext?.User;
@@ -57,6 +45,18 @@ namespace miniHelpDesk.Application.Services
             return _mapper.Map<UserSummaryResponse>(user);
         }
 
+        public async Task<UserSummaryResponse?> GetByIdAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            return _mapper.Map<UserSummaryResponse?>(user);
+        }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _userRepository.GetByEmailAsync(email);
+        }
+
         public async Task<List<UserSummaryResponse>> GetAllAsync()
         {
             var users = await _userRepository.GetAllAsync();
@@ -71,6 +71,17 @@ namespace miniHelpDesk.Application.Services
             await _userRepository.CreateAsync(user);
 
             return _mapper.Map<UserSummaryResponse>(user);
+        }
+
+        public async Task<UserSummaryResponse> UpdateMeAsync(UpdateUserRequest data)
+        {
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+
+            var idClaim = userRequest?.FindFirst("id")?.Value;
+
+            int.TryParse(idClaim, out var userId);
+
+            return await UpdateAsync(userId, data);
         }
 
         public async Task<UserSummaryResponse> UpdateAsync(int id, UpdateUserRequest data)
@@ -92,17 +103,6 @@ namespace miniHelpDesk.Application.Services
             await _userRepository.SaveChangesAsync();
 
             return _mapper.Map<UserSummaryResponse>(user);
-        }
-
-        public async Task<UserSummaryResponse> UpdateMeAsync(UpdateUserRequest data)
-        {
-            var userRequest = _httpContextAccessor.HttpContext?.User;
-
-            var idClaim = userRequest?.FindFirst("id")?.Value;
-
-            int.TryParse(idClaim, out var userId);
-
-            return await UpdateAsync(userId, data);
         }
 
         public async Task<bool> DeleteAsync(int id)

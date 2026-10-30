@@ -18,11 +18,10 @@ namespace miniHelpDesk.Api.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserRequest data)
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
         {
-            var response = await _userService.CreateAsync(data);
+            var response = await _userService.GetMeAsync();
 
             return Ok(response);
         }
@@ -38,14 +37,6 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("me")]
-        public async Task<IActionResult> GetMe()
-        {
-            var response = await _userService.GetMeAsync();
-
-            return Ok(response);
-        }
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserSummaryResponse>>> GetAll()
         {
@@ -53,11 +44,12 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequest data)
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateUserRequest data)
         {
-            var response = await _userService.UpdateAsync(id, data);
+            var response = await _userService.CreateAsync(data);
+
             return Ok(response);
         }
 
@@ -68,7 +60,15 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequest data)
+        {
+            var response = await _userService.UpdateAsync(id, data);
+            return Ok(response);
+        }
 
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
