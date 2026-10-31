@@ -11,7 +11,9 @@ namespace miniHelpDesk.Core.Interface
         Task<List<Ticket>> GetAllAsync();
 
         Task<Ticket?> GetByIdAsync(int id);
-
+        
+        Task<Ticket> UpdateAsync(Ticket ticket);
+    
         Task SaveChangesAsync();
 
     }

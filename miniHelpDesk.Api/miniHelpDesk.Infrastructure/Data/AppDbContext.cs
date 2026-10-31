@@ -12,6 +12,7 @@ namespace miniHelpDesk.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }
+        public DbSet<Sector> Sectors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +57,11 @@ namespace miniHelpDesk.Infrastructure.Data
                 .WithMany(t => t.History)
                 .HasForeignKey(h => h.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Sectors)
+                .WithMany(s => s.Users)
+                .UsingEntity(j => j.ToTable("UserSectors"));
         }
     }
 }

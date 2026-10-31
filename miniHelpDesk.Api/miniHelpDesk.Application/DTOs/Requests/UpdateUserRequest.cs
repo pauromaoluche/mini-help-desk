@@ -15,5 +15,8 @@ namespace miniHelpDesk.Application.DTOs.Requests
         public string? Password { get; set; }
 
         public UserRoleEnum? Role { get; set; }
+
+        public List<int>? SectorIdsToAdd { get; set; }
+        public List<int>? SectorIdsToRemove { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace miniHelpDesk.Core.Interface
 
         Task<User> CreateAsync(User user);
 
-        Task<User> UpdateAsync(int id, User user);
+        Task<User> UpdateAsync(User user);
 
         Task<bool> DeleteAsync(int id);
 

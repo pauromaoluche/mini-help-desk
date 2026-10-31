@@ -22,6 +22,48 @@ namespace miniHelpDesk.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SectorUser", b =>
+                {
+                    b.Property<int>("SectorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SectorsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("UserSectors", (string)null);
+                });
+
+            modelBuilder.Entity("miniHelpDesk.Core.Entities.Sector", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(3);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sectors");
+                });
+
             modelBuilder.Entity("miniHelpDesk.Core.Entities.Ticket", b =>
                 {
                     b.Property<int>("Id")
@@ -41,7 +83,7 @@ namespace miniHelpDesk.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnOrder(8);
+                        .HasColumnOrder(9);
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("int")
@@ -56,24 +98,30 @@ namespace miniHelpDesk.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(5);
 
-                    b.Property<int>("Status")
+                    b.Property<int>("SectorId")
                         .HasColumnType("int")
                         .HasColumnOrder(6);
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnOrder(7);
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnOrder(7);
+                        .HasColumnOrder(8);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnOrder(9);
+                        .HasColumnOrder(10);
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedToId");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("SectorId");
 
                     b.ToTable("Tickets");
                 });
@@ -173,6 +221,21 @@ namespace miniHelpDesk.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SectorUser", b =>
+                {
+                    b.HasOne("miniHelpDesk.Core.Entities.Sector", null)
+                        .WithMany()
+                        .HasForeignKey("SectorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("miniHelpDesk.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("miniHelpDesk.Core.Entities.Ticket", b =>
                 {
                     b.HasOne("miniHelpDesk.Core.Entities.User", "AssignedTo")
@@ -185,9 +248,17 @@ namespace miniHelpDesk.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("miniHelpDesk.Core.Entities.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AssignedTo");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("Sector");
                 });
 
             modelBuilder.Entity("miniHelpDesk.Core.Entities.TicketHistory", b =>
@@ -199,7 +270,7 @@ namespace miniHelpDesk.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("miniHelpDesk.Core.Entities.Ticket", "Ticket")
-                        .WithMany()
+                        .WithMany("History")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -207,6 +278,11 @@ namespace miniHelpDesk.Infrastructure.Migrations
                     b.Navigation("ChangedBy");
 
                     b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("miniHelpDesk.Core.Entities.Ticket", b =>
+                {
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }

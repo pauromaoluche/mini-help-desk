@@ -6,7 +6,9 @@ namespace miniHelpDesk.Application.DTOs.Requests
     {
         public TicketStatusEnum Status { get; set; }
 
-        //public TicketCategoryEnum Category { get; set; }
+        public TicketCategoryEnum Category { get; set; }
+
+        public TicketPriorityEnum Priority { get; set; }
 
         public string? Comment { get; set; }
     }

@@ -17,7 +17,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
         public async Task<User> CreateAsync(User user)
         {
             await _userDbContext.Users.AddAsync(user);
+
             await _userDbContext.SaveChangesAsync();
+
             return user;
         }
 
@@ -59,28 +61,13 @@ namespace miniHelpDesk.Infrastructure.Repositories
             await _userDbContext.SaveChangesAsync();
         }
 
-        public async Task<User> UpdateAsync(int id, User user)
+        public async Task<User> UpdateAsync(User user)
         {
-            var existingUser = await _userDbContext.Users.FindAsync(id);
-            if (existingUser == null)
-            {
-                throw new KeyNotFoundException("Usuário não encontrado.");
-            }
+            _userDbContext.Users.Update(user);
 
-            existingUser.Name = user.Name;
-            existingUser.Email = user.Email;
-            existingUser.Role = user.Role;
-
-
-            if (!string.IsNullOrEmpty(user.Password))
-            {
-                existingUser.Password = user.Password;
-            }
-
-            _userDbContext.Users.Update(existingUser);
             await _userDbContext.SaveChangesAsync();
 
-            return existingUser;
+            return user;
         }
     }
 }

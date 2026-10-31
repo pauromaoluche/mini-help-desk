@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using miniHelpDesk.Application.common;
 using miniHelpDesk.Application.DTOs.Requests;
 using miniHelpDesk.Application.DTOs.Response;
 using miniHelpDesk.Application.Interfaces;
 using miniHelpDesk.Core.Entities;
 using miniHelpDesk.Core.Entities.Enums;
 using miniHelpDesk.Core.Interface;
+using System.Security.Claims;
 
 namespace miniHelpDesk.Application.Services
 {
@@ -13,29 +15,34 @@ namespace miniHelpDesk.Application.Services
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ISectorRepository _sectorRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
-        public TicketService(ITicketRepository ticketRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper, IUserRepository userRepository)
+        public TicketService(
+            ITicketRepository ticketRepository,
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper,
+            IUserRepository userRepository,
+            ISectorRepository sectorRepository)
         {
             _ticketRepository = ticketRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _userRepository = userRepository;
+            _sectorRepository = sectorRepository;
+
         }
 
         public async Task<TicketSummaryResponse> AssignAsync(int id)
         {
             var ticket = await _ticketRepository.GetByIdAsync(id);
 
-            if(ticket == null)
-            {
-                throw new Exception("Ticket not found");
-            }
-            if(ticket.AssignedToId != null)
-            {
-                throw new Exception("Ticket already assigned");
-            }
+            if (ticket == null)
+                throw new ApiException(404, "ticket_not_found", "Ticket not found.");
+
+            if (ticket.AssignedToId != null)
+                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
 
             var userId = GetCurrentUserId();
 
@@ -45,9 +52,7 @@ namespace miniHelpDesk.Application.Services
             var assigned = ticket.AssignTo(userId);
 
             if (!assigned)
-            {
-                throw new Exception("Ticket already assigned to this user");
-            }
+                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
 
             await CreateHistory(ticket, oldAssignedToId, oldStatus);
             await _ticketRepository.SaveChangesAsync();
@@ -59,12 +64,17 @@ namespace miniHelpDesk.Application.Services
         {
             var userId = GetCurrentUserId();
 
+            var sector = await _sectorRepository.GetByIdAsync(data.SectorId);
+            if (sector == null)
+                throw new ApiException(404, "sector_not_found", "Sector not found.");
+
             var ticket = new Ticket(
                data.Title,
                data.Description,
                data.Category,
                data.Priority,
-               userId
+               userId,
+               data.SectorId
             );
 
             await _ticketRepository.CreateAsync(ticket);
@@ -121,22 +131,18 @@ namespace miniHelpDesk.Application.Services
             var ticket = await _ticketRepository.GetByIdAsync(id);
 
 
-            if(ticket == null)
-            {
-                throw new Exception("Ticket not found");
-            }
+            if (ticket == null)
+                throw new ApiException(404, "ticket_not_found", "Ticket not found.");
 
             var oldStatus = ticket.Status;
 
-            var updated = ticket.UpdateProgress(data.Status);
+            var updated = ticket.UpdateProgress(data.Status, data.Category, data.Priority, ticket.SectorId, ticket.AssignedToId);
 
             if (!updated)
-            {
-                throw new Exception("No changes were made to the ticket");
-            }
+                throw new ApiException(400, "ticket_not_updated", "No changes were made to the ticket.");
 
             await CreateHistory(ticket, ticket.AssignedToId, oldStatus, data.Comment);
-            await _ticketRepository.SaveChangesAsync();
+            await _ticketRepository.UpdateAsync(ticket);
 
             return _mapper.Map<TicketDetailResponse>(ticket);
         }
@@ -146,39 +152,84 @@ namespace miniHelpDesk.Application.Services
             var ticket = await _ticketRepository.GetByIdAsync(id);
 
             if (ticket == null)
+                throw new ApiException(404, "ticket_not_found", "Ticket not found.");
+
+            var userRole = GetLoggedUserRole();
+            var currentUserId = GetCurrentUserId();
+
+            if (userRole == UserRoleEnum.User)
             {
-                throw new Exception("Ticket not found");
+                if (ticket.AssignedToId != currentUserId)
+                {
+                    throw new ApiException(403, "forbidden_transfer", "Você não tem permissão para transferir um atendimento que não está atribuído a você.");
+                }
             }
 
             var oldAssignedToId = ticket.AssignedToId;
-
             var oldStatus = ticket.Status;
 
-            var newAssigned = await _userRepository.GetByIdAsync(data.NewAssignedToId);
+            int? newAssignedId = null;
 
-            if(newAssigned == null)
+            if (data.NewAssignedToId.HasValue)
             {
-                throw new Exception("New assigned user not found");
+                if (data.NewAssignedToId.Value > 0)
+                {
+                    var newAssigned = await _userRepository.GetByIdAsync(data.NewAssignedToId.Value);
+
+                    if (newAssigned == null)
+                        throw new ApiException(404, "user_not_found", "User not found.");
+
+                    if (ticket.AssignedToId == newAssigned.Id)
+                        throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned to this user");
+
+                    newAssignedId = newAssigned.Id;
+                }
+                else
+                {
+                    newAssignedId = null;
+                }
             }
 
-            if(ticket.AssignedToId == data.NewAssignedToId)
+            int targetSectorId = ticket.SectorId;
+            if (data.SectorId.HasValue && data.SectorId.Value > 0)
             {
-                throw new Exception("Ticket is already assigned to this user");
+                var sector = await _sectorRepository.GetByIdAsync(data.SectorId.Value);
+                if (sector == null)
+                    throw new ApiException(404, "sector_not_found", "Sector not found.");
+
+                targetSectorId = data.SectorId.Value;
             }
 
-            var updated = ticket.UpdateProgress(TicketStatusEnum.Backlog, newAssigned.Id);
+            var updated = ticket.UpdateProgress(
+                status: TicketStatusEnum.Backlog,
+                category: data.Category,
+                priority: data.Priority,
+                sectorId: targetSectorId,
+                assignedToId: newAssignedId
+            );
 
             if (!updated)
-            {
-                throw new Exception("No changes were made to the ticket");
-            }
+                throw new ApiException(400, "ticket_not_updated", "No changes were made to the ticket");
 
             await CreateHistory(ticket, oldAssignedToId, oldStatus, data.Comment);
 
             await _ticketRepository.SaveChangesAsync();
 
             return _mapper.Map<TicketSummaryResponse>(ticket);
+        }
 
+        private UserRoleEnum GetLoggedUserRole()
+        {
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+
+            var roleClaim = userRequest?.FindFirst(ClaimTypes.Role)?.Value ?? userRequest?.FindFirst("role")?.Value;
+
+            if (Enum.TryParse<UserRoleEnum>(roleClaim, true, out var loggedUserRole))
+            {
+                return loggedUserRole;
+            }
+
+            return UserRoleEnum.User;
         }
     }
 }

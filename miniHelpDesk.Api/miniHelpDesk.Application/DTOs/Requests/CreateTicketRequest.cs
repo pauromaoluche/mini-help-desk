@@ -1,8 +1,5 @@
 ﻿using miniHelpDesk.Core.Entities.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace miniHelpDesk.Application.DTOs.Requests
 {
@@ -23,6 +20,9 @@ namespace miniHelpDesk.Application.DTOs.Requests
         public TicketPriorityEnum Priority { get; set; }
 
         public int AssignedToId { get; set; } = 0;
+
+        [Required]
+        public int SectorId { get; set; } = 0;
 
     }
 }

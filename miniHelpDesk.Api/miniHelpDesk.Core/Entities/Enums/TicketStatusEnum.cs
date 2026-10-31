@@ -2,11 +2,10 @@
 {
     public enum TicketStatusEnum
     {
-        Open,
         Backlog,
+        UserBacklog,
         Paused,
         InProgress,
-        WaitingForCustomer,
         Resolved,
         Closed
     }

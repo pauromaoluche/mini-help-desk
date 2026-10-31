@@ -44,5 +44,11 @@ namespace miniHelpDesk.Infrastructure.Repositories
         {
             await _ticketDbContext.SaveChangesAsync();
         }
+
+        public async Task<Ticket> UpdateAsync(Ticket ticket)
+        {
+            await _ticketDbContext.SaveChangesAsync();
+            return ticket;
+        }
     }
 }

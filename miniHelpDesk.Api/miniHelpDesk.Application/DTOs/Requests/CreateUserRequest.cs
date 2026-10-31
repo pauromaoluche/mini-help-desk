@@ -19,5 +19,7 @@ namespace miniHelpDesk.Application.DTOs.Requests
 
         [Required]
         public UserRoleEnum Role { get; set; } = UserRoleEnum.User;
+
+        public List<int> SectorIds { get; set; } = new List<int>();
     }
 }

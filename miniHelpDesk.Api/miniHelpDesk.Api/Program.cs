@@ -32,6 +32,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ISectorService, SectorService>();
+builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Services.AddAutoMapper(_ => { }, typeof(UserMappingProfile).Assembly);
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -139,6 +141,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
     UserSeeder.SeedAdminUserAsync(dbContext, passwordHasher).GetAwaiter().GetResult();
+    SectorSeeder.SeedSectorAsync(dbContext).GetAwaiter().GetResult();
 }
 
 if (app.Environment.IsDevelopment())

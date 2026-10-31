@@ -10,6 +10,8 @@ namespace miniHelpDesk.Application.DTOs.Response
         public TicketCategoryEnum Category { get; set; }
         public TicketPriorityEnum Priority { get; set; }
         public TicketStatusEnum Status { get; set; }
+        public int SectorId { get; set; }
+        public int AssignedToId { get; set; }
 
     }
 }

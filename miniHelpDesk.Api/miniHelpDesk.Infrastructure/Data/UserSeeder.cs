@@ -17,14 +17,12 @@ namespace miniHelpDesk.Infrastructure.Data
                 return;
             }
 
-            var adminUser = new User
-            {
-                Name = "Admin",
-                Email = adminEmail,
-                Role = UserRoleEnum.Manager
-            };
-
-            adminUser.Password = passwordHasher.HashPassword(adminUser, "12345678");
+            var adminUser = new User(
+                "Admin",
+                adminEmail,
+                passwordHasher.HashPassword(null, "12345678"),
+                UserRoleEnum.Admin
+            );
 
             await context.Users.AddAsync(adminUser);
             await context.SaveChangesAsync();
