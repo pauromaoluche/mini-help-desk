@@ -14,18 +14,6 @@ namespace miniHelpDesk.Infrastructure.Repositories
             _ticketDbContext = ticketDbContext;
         }
 
-        public async Task<Ticket> CreateAsync(Ticket ticket)
-        {
-            await _ticketDbContext.Tickets.AddAsync(ticket);
-            await _ticketDbContext.SaveChangesAsync();
-            return ticket;
-        }
-
-        public async Task AddHistoryAsync(TicketHistory ticketHistory)
-        {
-            await _ticketDbContext.TicketHistories.AddAsync(ticketHistory);
-        }
-
         public async Task<List<Ticket>> GetAllAsync()
         {
             return await _ticketDbContext.Tickets.ToListAsync();
@@ -40,15 +28,27 @@ namespace miniHelpDesk.Infrastructure.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task<Ticket> CreateAsync(Ticket ticket)
         {
+            await _ticketDbContext.Tickets.AddAsync(ticket);
             await _ticketDbContext.SaveChangesAsync();
+            return ticket;
         }
 
         public async Task<Ticket> UpdateAsync(Ticket ticket)
         {
             await _ticketDbContext.SaveChangesAsync();
             return ticket;
+        }
+
+        public async Task AddHistoryAsync(TicketHistory ticketHistory)
+        {
+            await _ticketDbContext.TicketHistories.AddAsync(ticketHistory);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _ticketDbContext.SaveChangesAsync();
         }
     }
 }

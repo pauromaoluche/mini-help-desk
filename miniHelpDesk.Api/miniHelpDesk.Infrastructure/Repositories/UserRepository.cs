@@ -14,9 +14,38 @@ namespace miniHelpDesk.Infrastructure.Repositories
             _userDbContext = userDbContext;
         }
 
+        public async Task<List<User>> GetAllAsync()
+        {
+           return await _userDbContext.Users.ToListAsync();
+        }
+
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await _userDbContext.Users.FindAsync(id);
+        }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _userDbContext.Users.AnyAsync(u => u.Email == email);
+        }
+
         public async Task<User> CreateAsync(User user)
         {
             await _userDbContext.Users.AddAsync(user);
+
+            await _userDbContext.SaveChangesAsync();
+
+            return user;
+        }
+
+        public async Task<User> UpdateAsync(User user)
+        {
+            _userDbContext.Users.Update(user);
 
             await _userDbContext.SaveChangesAsync();
 
@@ -36,38 +65,9 @@ namespace miniHelpDesk.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> ExistsByEmailAsync(string email)
-        {
-            return await _userDbContext.Users.AnyAsync(u => u.Email == email);
-        }
-
-        public async Task<List<User>> GetAllAsync()
-        {
-           return await _userDbContext.Users.ToListAsync();
-        }
-
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<User?> GetByIdAsync(int id)
-        {
-            return await _userDbContext.Users.FindAsync(id);
-        }
-
         public async Task SaveChangesAsync()
         {
             await _userDbContext.SaveChangesAsync();
-        }
-
-        public async Task<User> UpdateAsync(User user)
-        {
-            _userDbContext.Users.Update(user);
-
-            await _userDbContext.SaveChangesAsync();
-
-            return user;
         }
     }
 }

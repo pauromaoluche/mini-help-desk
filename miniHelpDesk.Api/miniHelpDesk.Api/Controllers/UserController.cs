@@ -18,11 +18,10 @@ namespace miniHelpDesk.Api.Controllers
             _userService = userService;
         }
 
-        [HttpGet("me")]
-        public async Task<IActionResult> GetMe()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserSummaryResponse>>> GetAll()
         {
-            var response = await _userService.GetMeAsync();
-
+            var response = await _userService.GetAllAsync();
             return Ok(response);
         }
 
@@ -37,10 +36,11 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserSummaryResponse>>> GetAll()
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
         {
-            var response = await _userService.GetAllAsync();
+            var response = await _userService.GetMeAsync();
+
             return Ok(response);
         }
 
@@ -53,18 +53,18 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPut("me")]
-        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserRequest data)
-        {
-            var response = await _userService.UpdateMeAsync(data);
-            return Ok(response);
-        }
-
         [Authorize(Roles = "Admin, Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequest data)
         {
             var response = await _userService.UpdateAsync(id, data);
+            return Ok(response);
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserRequest data)
+        {
+            var response = await _userService.UpdateMeAsync(data);
             return Ok(response);
         }
 

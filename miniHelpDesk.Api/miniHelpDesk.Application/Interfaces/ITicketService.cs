@@ -5,17 +5,17 @@ namespace miniHelpDesk.Application.Interfaces
 {
     public interface ITicketService
     {
-        Task<TicketSummaryResponse> CreateAsync(CreateTicketRequest data);
+        Task<List<TicketSummaryResponse>> GetAllAsync();
 
         Task<TicketDetailResponse> GetByIdAsync(int id);
 
-        Task<TicketSummaryResponse> TransferTicketAsync(int id, TransferTicketRequest data);
-
-        Task<List<TicketSummaryResponse>> GetAllAsync();
-
-        Task<TicketSummaryResponse> AssignAsync(int id);
+        Task<TicketSummaryResponse> CreateAsync(CreateTicketRequest data);
 
         Task<TicketDetailResponse> UpdateTicketProgressAsync(int id, UpdateTicketProgressRequest data);
+
+        Task<TicketSummaryResponse> TransferTicketAsync(int id, TransferTicketRequest data);
+
+        Task<TicketSummaryResponse> AssignAsync(int id);
 
         Task SaveChangesAsync();
     }

@@ -17,11 +17,10 @@ namespace miniHelpDesk.Api.Controllers
             _ticketService = ticketService;
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTicketRequest data)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var response = await _ticketService.CreateAsync(data);
+            var response = await _ticketService.GetAllAsync();
 
             return Ok(response);
         }
@@ -33,24 +32,18 @@ namespace miniHelpDesk.Api.Controllers
 
             return Ok(response);
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var response = await _ticketService.GetAllAsync();
 
-            return Ok(response);
-        }
-
-        [HttpPatch("{id}/assign")]
-        public async Task<IActionResult> Assign([FromRoute] int id)
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTicketRequest data)
         {
-            var response = await _ticketService.AssignAsync(id);
+            var response = await _ticketService.CreateAsync(data);
+
             return Ok(response);
         }
 
         [HttpPatch("{id}/progress")]
-        public async Task<IActionResult> UpdateTicketProgress([FromRoute] int id, [FromBody] UpdateTicketProgressRequest data) 
+        public async Task<IActionResult> UpdateTicketProgress([FromRoute] int id, [FromBody] UpdateTicketProgressRequest data)
         {
             var response = await _ticketService.UpdateTicketProgressAsync(id, data);
 
@@ -61,6 +54,13 @@ namespace miniHelpDesk.Api.Controllers
         public async Task<IActionResult> TransferTicket([FromRoute] int id, [FromBody] TransferTicketRequest data)
         {
             var response = await _ticketService.TransferTicketAsync(id, data);
+            return Ok(response);
+        }
+
+        [HttpPatch("{id}/assign")]
+        public async Task<IActionResult> Assign([FromRoute] int id)
+        {
+            var response = await _ticketService.AssignAsync(id);
             return Ok(response);
         }
     }

@@ -34,30 +34,16 @@ namespace miniHelpDesk.Application.Services
 
         }
 
-        public async Task<TicketSummaryResponse> AssignAsync(int id)
+        public async Task<List<TicketSummaryResponse>> GetAllAsync()
+        {
+            var tickets = await _ticketRepository.GetAllAsync();
+            return _mapper.Map<List<TicketSummaryResponse>>(tickets);
+        }
+
+        public async Task<TicketDetailResponse> GetByIdAsync(int id)
         {
             var ticket = await _ticketRepository.GetByIdAsync(id);
-
-            if (ticket == null)
-                throw new ApiException(404, "ticket_not_found", "Ticket not found.");
-
-            if (ticket.AssignedToId != null)
-                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
-
-            var userId = GetCurrentUserId();
-
-            var oldAssignedToId = ticket.AssignedToId;
-            var oldStatus = ticket.Status;
-
-            var assigned = ticket.AssignTo(userId);
-
-            if (!assigned)
-                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
-
-            await CreateHistory(ticket, oldAssignedToId, oldStatus);
-            await _ticketRepository.SaveChangesAsync();
-
-            return _mapper.Map<TicketSummaryResponse>(ticket);
+            return _mapper.Map<TicketDetailResponse>(ticket);
         }
 
         public async Task<TicketSummaryResponse> CreateAsync(CreateTicketRequest data)
@@ -80,50 +66,6 @@ namespace miniHelpDesk.Application.Services
             await _ticketRepository.CreateAsync(ticket);
 
             return _mapper.Map<TicketSummaryResponse>(ticket);
-        }
-
-        public async Task<List<TicketSummaryResponse>> GetAllAsync()
-        {
-            var tickets = await _ticketRepository.GetAllAsync();
-            return _mapper.Map<List<TicketSummaryResponse>>(tickets);
-        }
-
-        public async Task<TicketDetailResponse> GetByIdAsync(int id)
-        {
-            var ticket = await _ticketRepository.GetByIdAsync(id);
-            return _mapper.Map<TicketDetailResponse>(ticket);
-        }
-
-        private async Task CreateHistory(
-            Ticket ticket,
-            int? oldAssignedToId,
-            TicketStatusEnum? oldStatus,
-            string? comment = null)
-        {
-            var history = new TicketHistory(
-                ticket.Id,
-                GetCurrentUserId(),
-                oldAssignedToId,
-                ticket.AssignedToId,
-                oldStatus,
-                ticket.Status,
-                comment);
-
-            await _ticketRepository.AddHistoryAsync(history);
-        }
-
-        public Task SaveChangesAsync()
-        {
-            return _ticketRepository.SaveChangesAsync();
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userRequest = _httpContextAccessor.HttpContext?.User;
-            var idClaim = userRequest?.FindFirst("id")?.Value;
-
-            int.TryParse(idClaim, out var userId);
-            return userId;
         }
 
         public async Task<TicketDetailResponse> UpdateTicketProgressAsync(int id, UpdateTicketProgressRequest data)
@@ -216,6 +158,64 @@ namespace miniHelpDesk.Application.Services
             await _ticketRepository.SaveChangesAsync();
 
             return _mapper.Map<TicketSummaryResponse>(ticket);
+        }
+
+        public async Task<TicketSummaryResponse> AssignAsync(int id)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+
+            if (ticket == null)
+                throw new ApiException(404, "ticket_not_found", "Ticket not found.");
+
+            if (ticket.AssignedToId != null)
+                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
+
+            var userId = GetCurrentUserId();
+
+            var oldAssignedToId = ticket.AssignedToId;
+            var oldStatus = ticket.Status;
+
+            var assigned = ticket.AssignTo(userId);
+
+            if (!assigned)
+                throw new ApiException(400, "ticket_already_assigned", "Ticket is already assigned.");
+
+            await CreateHistory(ticket, oldAssignedToId, oldStatus);
+            await _ticketRepository.SaveChangesAsync();
+
+            return _mapper.Map<TicketSummaryResponse>(ticket);
+        }
+
+        public Task SaveChangesAsync()
+        {
+            return _ticketRepository.SaveChangesAsync();
+        }
+
+        private async Task CreateHistory(
+            Ticket ticket,
+            int? oldAssignedToId,
+            TicketStatusEnum? oldStatus,
+            string? comment = null)
+        {
+            var history = new TicketHistory(
+                ticket.Id,
+                GetCurrentUserId(),
+                oldAssignedToId,
+                ticket.AssignedToId,
+                oldStatus,
+                ticket.Status,
+                comment);
+
+            await _ticketRepository.AddHistoryAsync(history);
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userRequest = _httpContextAccessor.HttpContext?.User;
+            var idClaim = userRequest?.FindFirst("id")?.Value;
+
+            int.TryParse(idClaim, out var userId);
+            return userId;
         }
 
         private UserRoleEnum GetLoggedUserRole()

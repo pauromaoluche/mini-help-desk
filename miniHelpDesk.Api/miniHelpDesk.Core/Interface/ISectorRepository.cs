@@ -4,9 +4,9 @@ namespace miniHelpDesk.Core.Interface
 {
     public interface ISectorRepository
     {
-        Task<Sector?> GetByIdAsync(int id);
-
         Task<List<Sector>> GetAllAsync();
+
+        Task<Sector?> GetByIdAsync(int id);
 
         Task<Sector> CreateAsync(Sector sector);
 
