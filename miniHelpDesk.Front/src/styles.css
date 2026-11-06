@@ -1,3 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+
+@theme {
+  --color-primary: #ffffff;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #ffffff;
+  --color-secondary-foreground: #ffffff;
+
+  --color-header: #F6F8FA;
+  --color-header-foreground: #555555;
+  --color-header-foreground-hover: color-mix(in srgb, var(--color-header-foreground) 80%, transparent);
+
+  --color-footer: #ffffff;
+  --color-footer-foreground: #ffffff;
+  --color-footer-foreground-hover: color-mix(in srgb, var(--color-footer-foreground) 80%, transparent);
+
+  --color-body: #ffffff;
+
+  --color-border: #E5E5E5;
+
+  --font-sans: var(--font-sans);
+}
