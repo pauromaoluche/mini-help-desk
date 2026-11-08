@@ -1,0 +1,53 @@
+<div class="mx-auto mt-16 max-w-md rounded-lg border p-6">
+  <h1 class="mb-6 text-2xl font-bold">Entrar</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label for="email" class="mb-1 block">E-mail</label>
+
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        class="w-full rounded border p-2"
+      />
+
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="mt-1 text-sm text-red-600">
+          Informe um e-mail válido.
+        </p>
+      }
+    </div>
+
+    <div class="mb-4">
+      <label for="password" class="mb-1 block">Senha</label>
+
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        class="w-full rounded border p-2"
+      />
+
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <p class="mt-1 text-sm text-red-600">
+          Informe sua senha.
+        </p>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <p role="alert" class="mb-4 text-red-600">{{ errorMessage }}</p>
+    }
+
+    <button
+      type="submit"
+      [disabled]="loading"
+      class="w-full rounded bg-blue-600 p-2 text-white disabled:opacity-50"
+    >
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+  </form>
+</div>
