@@ -18,9 +18,13 @@
   --color-footer-foreground: #ffffff;
   --color-footer-foreground-hover: color-mix(in srgb, var(--color-footer-foreground) 80%, transparent);
 
-  --color-body: #ffffff;
+  --color-body: #2b2b2b;
 
   --color-border: #E5E5E5;
 
   --font-sans: var(--font-sans);
+}
+
+body {
+  color: var(--color-body);
 }

@@ -1,0 +1,28 @@
+<section class="rounded-md border border-border lg:col-span-2">
+  <div class="flex items-center justify-between border-b border-border px-4 py-3">
+    <span class="font-semibold">Todos os tickets</span>
+  </div>
+
+  <app-tickets-filter />
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[720px] text-left">
+      <thead class="border-b border-border bg-neutral-50 text-xs">
+        <tr>
+          <th class="px-4 py-2 font-semibold">Ticket</th>
+          <th class="px-3 py-2 font-semibold">Prioridade</th>
+          <th class="px-3 py-2 font-semibold">Status</th>
+          <th class="px-3 py-2 font-semibold">Responsável</th>
+          <th class="px-3 py-2 font-semibold">Progresso</th>
+          <th class="px-4 py-2 text-right font-semibold">Ação</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border">
+        @for (ticket of tickets; track ticket.id) {
+          <tr app-ticket-item [ticket]="ticket"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div id="empty" class="hidden px-4 py-10 text-center">Nenhum ticket encontrado. Ajuste os filtros para ver mais resultados.</div>
+</section>
