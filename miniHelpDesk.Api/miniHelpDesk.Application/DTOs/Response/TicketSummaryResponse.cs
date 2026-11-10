@@ -12,6 +12,8 @@ namespace miniHelpDesk.Application.DTOs.Response
         public TicketStatusEnum Status { get; set; }
         public int SectorId { get; set; }
         public int AssignedToId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
     }
 }
