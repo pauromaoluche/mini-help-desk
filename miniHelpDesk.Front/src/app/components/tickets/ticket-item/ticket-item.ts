@@ -1,18 +1,13 @@
 import { Component, Input } from '@angular/core';
-
-export interface Ticket {
-  id: number;
-  title: string;
-  priority: string;
-  status: string;
-  assignee: string | null;
-  progress: number;
-}
+import { TicketSummaryResponse } from '../../../models/response/ticket-summary-response';
 
 @Component({
   selector: 'tr[app-ticket-item]',
   templateUrl: './ticket-item.html',
 })
 export class TicketItem {
-  @Input({ required: true }) ticket!: Ticket;
+  @Input({ required: true }) ticket!: TicketSummaryResponse;
+
+  protected readonly priorities = ['Low', 'Medium', 'High', 'Critical'];
+  protected readonly statuses = ['Backlog', 'UserBacklog', 'Paused', 'InProgress', 'Resolved', 'Closed'];
 }

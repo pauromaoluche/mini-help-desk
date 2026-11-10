@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TicketsFilter } from '../tickets-filter/tickets-filter';
-import { Ticket, TicketItem } from '../ticket-item/ticket-item';
+import { TicketSummaryResponse } from '../../../models/response/ticket-summary-response';
+import { TicketItem } from '../ticket-item/ticket-item';
 
 @Component({
   imports: [TicketsFilter, TicketItem],
@@ -8,5 +9,5 @@ import { Ticket, TicketItem } from '../ticket-item/ticket-item';
   templateUrl: './tickets-table.html',
 })
 export class TicketsTable {
-  protected readonly tickets: Ticket[] = [];
+  @Input() tickets: TicketSummaryResponse[] = [];
 }
