@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TicketService } from '../../services/ticket-service';
 import { Header } from '../../components/header/header';
 import { Container } from '../../components/container/container';
@@ -11,7 +11,7 @@ import { TicketSummaryResponse } from '../../models/response/ticket-summary-resp
   templateUrl: './dashboard.html',
 })
 export class Dashboard {
-  tickets: TicketSummaryResponse[] = [];
+  readonly tickets = signal<TicketSummaryResponse[]>([]);
 
   constructor(private ticketService: TicketService) {}
 
@@ -19,7 +19,7 @@ export class Dashboard {
     this.ticketService.getTickets().subscribe({
       next: (tickets) => {
         console.log('Chamados recebidos:', tickets);
-        this.tickets = tickets;
+        this.tickets.set(tickets);
       },
       error: (error) => {
         console.error('Erro ao buscar chamados:', error);
