@@ -28,6 +28,13 @@ namespace miniHelpDesk.Infrastructure.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
+        public async Task<List<Ticket>> GetByUserIdAsync(int userId)
+        {
+            return await _ticketDbContext.Tickets
+                .Where(t => t.AssignedToId == userId)
+                .ToListAsync();
+        }
+
         public async Task<Ticket> CreateAsync(Ticket ticket)
         {
             await _ticketDbContext.Tickets.AddAsync(ticket);

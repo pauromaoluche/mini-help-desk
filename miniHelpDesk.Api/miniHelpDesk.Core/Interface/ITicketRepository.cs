@@ -8,6 +8,8 @@ namespace miniHelpDesk.Core.Interface
 
         Task<Ticket?> GetByIdAsync(int id);
 
+        Task<List<Ticket>> GetByUserIdAsync(int userId);
+
         Task<Ticket> CreateAsync(Ticket ticket);
         
         Task<Ticket> UpdateAsync(Ticket ticket);

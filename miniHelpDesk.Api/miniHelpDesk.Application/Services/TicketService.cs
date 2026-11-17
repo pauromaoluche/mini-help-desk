@@ -40,6 +40,34 @@ namespace miniHelpDesk.Application.Services
             return _mapper.Map<List<TicketSummaryResponse>>(tickets);
         }
 
+        public async Task<List<TicketSummaryResponse>> GetMyTicketsAsync()
+        {
+            var userId = GetCurrentUserId();
+
+            var tickets = await _ticketRepository.GetByUserIdAsync(userId);
+
+            return _mapper.Map<List<TicketSummaryResponse>>(tickets);
+        }
+
+        public async Task<MyTicketResumeResponse> GetMyTicketsResumeAsync()
+        {
+            var userId = GetCurrentUserId();
+
+            var tickets = await _ticketRepository.GetByUserIdAsync(userId);
+
+            var resume = new MyTicketResumeResponse
+            {
+                Total = tickets.Count,
+                Backlog = tickets.Count(t => t.Status == TicketStatusEnum.Backlog),
+                Paused = tickets.Count(t => t.Status == TicketStatusEnum.Paused),
+                InProgress = tickets.Count(t => t.Status == TicketStatusEnum.InProgress),
+                Resolved = tickets.Count(t => t.Status == TicketStatusEnum.Resolved),
+                Closed = tickets.Count(t => t.Status == TicketStatusEnum.Closed)
+            };
+
+            return resume;
+        }
+
         public async Task<TicketDetailResponse> GetByIdAsync(int id)
         {
             var ticket = await _ticketRepository.GetByIdAsync(id);

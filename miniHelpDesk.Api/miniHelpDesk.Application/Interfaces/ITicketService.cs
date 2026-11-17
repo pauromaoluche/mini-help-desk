@@ -7,6 +7,10 @@ namespace miniHelpDesk.Application.Interfaces
     {
         Task<List<TicketSummaryResponse>> GetAllAsync();
 
+        Task<List<TicketSummaryResponse>> GetMyTicketsAsync();
+
+        Task<MyTicketResumeResponse> GetMyTicketsResumeAsync();
+
         Task<TicketDetailResponse> GetByIdAsync(int id);
 
         Task<TicketSummaryResponse> CreateAsync(CreateTicketRequest data);

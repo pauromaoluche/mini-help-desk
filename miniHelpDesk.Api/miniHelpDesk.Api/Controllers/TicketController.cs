@@ -25,6 +25,22 @@ namespace miniHelpDesk.Api.Controllers
             return Ok(response);
         }
 
+        [HttpGet("me/summary")]
+        public async Task<IActionResult> GetMyTickets()
+        {
+            var response = await _ticketService.GetMyTicketsAsync();
+
+            return Ok(response);
+        }
+
+        [HttpGet("me/resume")]
+        public async Task<IActionResult> GetMyTicketsResume()
+        {
+            var response = await _ticketService.GetMyTicketsResumeAsync();
+
+            return Ok(response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
