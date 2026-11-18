@@ -4,6 +4,7 @@ import { Header } from '../../components/header/header';
 import { Container } from '../../components/container/container';
 import { TicketsTable } from '../../components/tickets/tickets-table/tickets-table';
 import { TicketSummaryResponse } from '../../models/response/ticket-summary-response';
+import { MyTicketsResumeResponse } from '../../models/response/my-tickets-resume-response';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,8 @@ import { TicketSummaryResponse } from '../../models/response/ticket-summary-resp
 })
 export class Dashboard {
   readonly tickets = signal<TicketSummaryResponse[]>([]);
+
+  readonly resume = signal<MyTicketsResumeResponse | null>(null);
 
   constructor(private ticketService: TicketService) {}
 
@@ -23,6 +26,15 @@ export class Dashboard {
       },
       error: (error) => {
         console.error('Erro ao buscar chamados:', error);
+      },
+    });
+    this.ticketService.getMyTicketResume().subscribe({
+      next: (resume) => {
+        console.log('Resumo de chamados recebidos:', resume);
+        this.resume.set(resume);
+      },
+      error: (error) => {
+        console.error('Erro ao buscar resumo de chamados:', error);
       },
     });
   }

@@ -4,6 +4,7 @@ import { tap } from 'rxjs';
 
 import { API_BASE_URL } from '../config/api.config';
 import { TicketSummaryResponse } from '../models/response/ticket-summary-response';
+import { MyTicketsResumeResponse } from '../models/response/my-tickets-resume-response';
 
 @Injectable({
   providedIn: 'root',
@@ -17,5 +18,9 @@ export class TicketService {
     return this.http.get<TicketSummaryResponse[]>(this.apiUrl).pipe(
       tap((tickets) => console.log('Fetched tickets:', tickets)),
     );
+  }
+
+  getMyTicketResume() {
+    return this.http.get<MyTicketsResumeResponse>(`${this.apiUrl}/me/resume`).pipe(tap((resume) => console.log('Fetched tickets:', resume)));
   }
 }
