@@ -2,6 +2,14 @@
 
 <div class="my-10">
   <app-container>
+    <div class="space-y-5">
+    <div class="grid grid-cols-4 gap-4">
+      <app-resume label="Backlog" [value]="resume()?.backlog ?? 0" color="text-backlog" />
+      <app-resume label="Em andamento" [value]="resume()?.inProgress ?? 0" color="text-in-progress" />
+      <app-resume label="Pausados" [value]="resume()?.paused ?? 0" color="text-paused" />
+      <app-resume label="Resolvidos" [value]="resume()?.resolved ?? 0" color="text-resolved" />
+    </div>
     <app-tickets-table [tickets]="tickets()" />
+    </div>
   </app-container>
 </div>

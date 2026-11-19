@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { Resume } from '../../components/resume/resume';
 import { TicketService } from '../../services/ticket-service';
 import { Header } from '../../components/header/header';
 import { Container } from '../../components/container/container';
@@ -8,7 +9,7 @@ import { MyTicketsResumeResponse } from '../../models/response/my-tickets-resume
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Header, Container, TicketsTable],
+  imports: [Header, Container, TicketsTable, Resume],
   templateUrl: './dashboard.html',
 })
 export class Dashboard {
