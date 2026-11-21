@@ -5,7 +5,7 @@ namespace miniHelpDesk.Application.Interfaces
 {
     public interface ITicketService
     {
-        Task<List<TicketSummaryResponse>> GetAllAsync();
+        Task<List<TicketSummaryResponse>> GetAllAsync(TicketFilterRequest filters);
 
         Task<List<TicketSummaryResponse>> GetMyTicketsAsync();
 

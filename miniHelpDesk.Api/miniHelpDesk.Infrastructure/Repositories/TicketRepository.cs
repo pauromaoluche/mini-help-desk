@@ -1,4 +1,5 @@
 ﻿using miniHelpDesk.Core.Entities;
+using miniHelpDesk.Core.Filters;
 using miniHelpDesk.Core.Interface;
 using miniHelpDesk.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,31 @@ namespace miniHelpDesk.Infrastructure.Repositories
             _ticketDbContext = ticketDbContext;
         }
 
-        public async Task<List<Ticket>> GetAllAsync()
+        public async Task<List<Ticket>> GetAllAsync(TicketFilter filters)
         {
-            return await _ticketDbContext.Tickets.ToListAsync();
+            var query = _ticketDbContext.Tickets.AsQueryable();
+
+            if (filters.Status.HasValue)
+            {
+                query = query.Where(t => t.Status == filters.Status.Value);
+            }
+
+            if (filters.Category.HasValue)
+            {
+                query = query.Where(t => t.Category == filters.Category.Value);
+            }
+
+            if (filters.Priority.HasValue)
+            {
+                query = query.Where(t => t.Priority == filters.Priority.Value);
+            }
+
+            if (filters.AssignedToId.HasValue)
+            {
+                query = query.Where(t => t.AssignedToId == filters.AssignedToId.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Ticket?> GetByIdAsync(int id)

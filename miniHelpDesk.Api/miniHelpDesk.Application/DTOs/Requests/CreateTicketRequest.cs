@@ -19,7 +19,7 @@ namespace miniHelpDesk.Application.DTOs.Requests
         [Required]
         public TicketPriorityEnum Priority { get; set; }
 
-        public int AssignedToId { get; set; } = 0;
+        public int AssignedToId { get; set; }
 
         [Required]
         public int SectorId { get; set; } = 0;

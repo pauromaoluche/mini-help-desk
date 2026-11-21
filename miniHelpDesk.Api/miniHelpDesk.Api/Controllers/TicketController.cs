@@ -18,9 +18,9 @@ namespace miniHelpDesk.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] TicketFilterRequest filters)
         {
-            var response = await _ticketService.GetAllAsync();
+            var response = await _ticketService.GetAllAsync(filters);
 
             return Ok(response);
         }

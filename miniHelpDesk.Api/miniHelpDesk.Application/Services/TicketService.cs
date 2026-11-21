@@ -6,6 +6,7 @@ using miniHelpDesk.Application.DTOs.Response;
 using miniHelpDesk.Application.Interfaces;
 using miniHelpDesk.Core.Entities;
 using miniHelpDesk.Core.Entities.Enums;
+using miniHelpDesk.Core.Filters;
 using miniHelpDesk.Core.Interface;
 using System.Security.Claims;
 
@@ -34,9 +35,17 @@ namespace miniHelpDesk.Application.Services
 
         }
 
-        public async Task<List<TicketSummaryResponse>> GetAllAsync()
+        public async Task<List<TicketSummaryResponse>> GetAllAsync(TicketFilterRequest filters)
         {
-            var tickets = await _ticketRepository.GetAllAsync();
+            var ticketFilter = new TicketFilter
+            {
+                Status = filters.Status,
+                Category = filters.Category,
+                Priority = filters.Priority,
+                AssignedToId = filters.AssignedToId
+            };
+
+            var tickets = await _ticketRepository.GetAllAsync(ticketFilter);
             return _mapper.Map<List<TicketSummaryResponse>>(tickets);
         }
 
