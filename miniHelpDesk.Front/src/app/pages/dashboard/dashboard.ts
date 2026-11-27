@@ -1,4 +1,6 @@
 import { Component, signal } from '@angular/core';
+import { finalize } from 'rxjs';
+import { TicketFilter } from '../../models/response/ticket-filter';
 import { Resume } from '../../components/resume/resume';
 import { TicketService } from '../../services/ticket-service';
 import { Header } from '../../components/header/header';
@@ -17,18 +19,13 @@ export class Dashboard {
 
   readonly resume = signal<MyTicketsResumeResponse | null>(null);
 
+  readonly loadingTickets = signal(false);
+
   constructor(private ticketService: TicketService) {}
 
   ngOnInit(): void {
-    this.ticketService.getTickets().subscribe({
-      next: (tickets) => {
-        console.log('Chamados recebidos:', tickets);
-        this.tickets.set(tickets);
-      },
-      error: (error) => {
-        console.error('Erro ao buscar chamados:', error);
-      },
-    });
+    this.searchTickets();
+
     this.ticketService.getMyTicketResume().subscribe({
       next: (resume) => {
         console.log('Resumo de chamados recebidos:', resume);
@@ -38,5 +35,19 @@ export class Dashboard {
         console.error('Erro ao buscar resumo de chamados:', error);
       },
     });
+  }
+
+  searchTickets(filters: TicketFilter = {}): void {
+    if (this.loadingTickets()) return;
+
+    this.loadingTickets.set(true);
+
+    this.ticketService
+      .getTickets(filters)
+      .pipe(finalize(() => this.loadingTickets.set(false)))
+      .subscribe({
+        next: (tickets) => this.tickets.set(tickets),
+        error: (error) => console.error('Erro ao buscar chamados:', error),
+      });
   }
 }

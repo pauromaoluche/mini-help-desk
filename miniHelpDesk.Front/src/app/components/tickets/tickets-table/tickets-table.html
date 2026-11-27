@@ -3,7 +3,7 @@
     <span class="font-semibold">Todos os tickets</span>
   </div>
 
-  <app-tickets-filter />
+  <app-tickets-filter [loading]="loading" (search)="search.emit($event)" />
 
   <div class="overflow-x-auto">
     <table class="w-full text-left">

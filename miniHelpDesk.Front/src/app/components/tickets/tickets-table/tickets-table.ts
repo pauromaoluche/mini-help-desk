@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TicketsFilter } from '../tickets-filter/tickets-filter';
 import { TicketSummaryResponse } from '../../../models/response/ticket-summary-response';
 import { TicketItem } from '../ticket-item/ticket-item';
+import { TicketFilter } from '../../../models/response/ticket-filter';
 
 @Component({
   imports: [TicketsFilter, TicketItem],
@@ -10,4 +11,6 @@ import { TicketItem } from '../ticket-item/ticket-item';
 })
 export class TicketsTable {
   @Input() tickets: TicketSummaryResponse[] = [];
+  @Input() loading = false;
+  @Output() search = new EventEmitter<TicketFilter>();
 }

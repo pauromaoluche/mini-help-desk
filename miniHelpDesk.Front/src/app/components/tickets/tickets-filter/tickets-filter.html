@@ -1,26 +1,25 @@
-<div class="grid gap-2 border-b border-border p-3 sm:grid-cols-2 xl:grid-cols-5">
-  <input
-    id="fSearch"
-    type="search"
-    placeholder="Buscar por título ou #"
-    class="rounded-md border border-border px-3 py-1.5 focus:border-border focus:outline-none focus:ring-2 xl:col-span-2"
-  />
-  <select class="rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
-    <option value="">Status: todos</option>
-    <option>Aberto</option>
-    <option>Em andamento</option>
-    <option>Aguardando</option>
-    <option>Concluído</option>
+<form (ngSubmit)="searchTickets()" class="grid gap-2 border-b border-border p-3 sm:grid-cols-2 xl:grid-cols-6">
+  <input id="fSearch" type="search" placeholder="Buscar por título ou #" aria-label="Buscar por título ou número" class="min-w-0 rounded-md border border-border px-3 py-1.5 focus:border-border focus:outline-none focus:ring-2 sm:col-span-2" />
+  <select name="status" [(ngModel)]="filters.status" aria-label="Status" class="min-w-0 rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
+    <option [ngValue]="null">Status: todos</option>
+    <option [ngValue]="0">Backlog</option>
+    <option [ngValue]="1">Backlog do usuário</option>
+    <option [ngValue]="2">Pausado</option>
+    <option [ngValue]="3">Em andamento</option>
+    <option [ngValue]="4">Resolvido</option>
+    <option [ngValue]="5">Fechado</option>
   </select>
-  <select class="rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
-    <option value="">Prioridade: todas</option>
-    <option>Alta</option>
-    <option>Média</option>
-    <option>Baixa</option>
+  <select name="priority" [(ngModel)]="filters.priority" aria-label="Prioridade" class="min-w-0 rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
+    <option [ngValue]="null">Prioridade: todas</option>
+    <option [ngValue]="0">Baixa</option>
+    <option [ngValue]="1">Média</option>
+    <option [ngValue]="2">Alta</option>
+    <option [ngValue]="3">Crítica</option>
   </select>
-  <select class="rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
+  <select aria-label="Responsável" class="min-w-0 rounded-md border border-border px-2 py-1.5 focus:border-border focus:outline-none focus:ring-2">
     <option value="">Responsável: todos</option>
     <option value="none">Sem responsável</option>
     <option value="me">Atribuídos a mim</option>
   </select>
-</div>
+  <button type="submit" [disabled]="loading" class="rounded-md border border-border px-3 py-1.5 font-semibold focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50">Buscar</button>
+</form>

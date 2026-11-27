@@ -9,7 +9,11 @@
       <app-resume label="Pausados" [value]="resume()?.paused ?? 0" color="text-paused" />
       <app-resume label="Resolvidos" [value]="resume()?.resolved ?? 0" color="text-resolved" />
     </div>
-    <app-tickets-table [tickets]="tickets()" />
+    <app-tickets-table
+      [tickets]="tickets()"
+      [loading]="loadingTickets()"
+      (search)="searchTickets($event)"
+    />
     </div>
   </app-container>
 </div>
