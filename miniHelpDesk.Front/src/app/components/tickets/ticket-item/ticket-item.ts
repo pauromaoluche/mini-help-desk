@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TicketSummaryResponse } from '../../../models/response/ticket-summary-response';
 
@@ -9,6 +9,7 @@ import { TicketSummaryResponse } from '../../../models/response/ticket-summary-r
 })
 export class TicketItem {
   @Input({ required: true }) ticket!: TicketSummaryResponse;
+  @Output() preview = new EventEmitter<TicketSummaryResponse>();
 
   protected readonly priorities = ['Low', 'Medium', 'High', 'Critical'];
   protected readonly statuses = ['Backlog', 'UserBacklog', 'Paused', 'InProgress', 'Resolved', 'Closed'];

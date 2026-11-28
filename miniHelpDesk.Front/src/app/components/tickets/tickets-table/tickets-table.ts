@@ -13,4 +13,5 @@ export class TicketsTable {
   @Input() tickets: TicketSummaryResponse[] = [];
   @Input() loading = false;
   @Output() search = new EventEmitter<TicketFilter>();
+  @Output() preview = new EventEmitter<TicketSummaryResponse>();
 }

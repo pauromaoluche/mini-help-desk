@@ -19,7 +19,7 @@
       </thead>
       <tbody class="divide-y divide-border text-sm">
         @for (ticket of tickets; track ticket.id) {
-          <tr app-ticket-item [ticket]="ticket"></tr>
+          <tr app-ticket-item [ticket]="ticket" (preview)="preview.emit($event)"></tr>
         }
       </tbody>
     </table>
